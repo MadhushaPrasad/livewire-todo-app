@@ -11,18 +11,21 @@
                 <input id="todoChecked" class="cursor-pointer" wire:click='toggle({{ $todo->id }})' type="checkbox">
             @endif
 
-            <!-- <input type="text" placeholder="Todo.."
-                    class="bg-gray-100  text-gray-900 text-sm rounded block w-full p-2.5"
-                    value="Todo Name">
-                
-                    <span class="text-red-500 text-xs block">error</span> -->
+            @if ($editingTodoId === $todo->id)
+                <input wire:model='editingTodoName' type="text" placeholder="Todo.."
+                    class="bg-gray-100  text-gray-900 text-sm rounded block w-full p-2.5" value="Todo Name">
 
-            <label for="todoChecked"
-                class="cursor-pointer text-lg text-semibold text-gray-800">{{ $todo->name }}</label>
+                @error('editingTodoName')
+                    <span class="text-red-500 text-xs block">error</span>
+                @enderror
+            @else
+                <label for="todoChecked"
+                    class="cursor-pointer text-lg text-semibold text-gray-800">{{ $todo->name }}</label>
+            @endif
         </div>
 
         <div class="flex items-center space-x-2">
-            <button wire:click='update({{ $todo->id }})'
+            <button wire:click='edit({{ $todo->id }})'
                 class="text-sm text-teal-500 font-semibold rounded hover:text-teal-800">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-4 h-4">
