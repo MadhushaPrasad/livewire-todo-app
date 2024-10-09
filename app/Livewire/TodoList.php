@@ -5,9 +5,13 @@ namespace App\Livewire;
 use App\Models\Todo;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class TodoList extends Component
 {
+
+    use WithPagination;
+
     #[Rule('required|min:6|max:100')]
     public $name = '';
 
@@ -29,7 +33,7 @@ class TodoList extends Component
     public function render()
     {
         return view('livewire.todo-list', [
-            'todos' => Todo::latest()->get()
+            'todos' => Todo::latest()->paginate(5),
         ]);
     }
 }
