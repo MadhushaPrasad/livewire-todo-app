@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Todo;
+use Exception;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -39,7 +40,12 @@ class TodoList extends Component
 
     public function delete($id)
     {
-        Todo::find($id)->delete();
+        try {
+            Todo::findOrFail($id)->delete();
+        } catch (Exception $e) {
+            session()->flash('error', 'Todo cannot be deleted.');
+            return;
+        }
     }
 
     function toggle($id)
@@ -53,21 +59,31 @@ class TodoList extends Component
 
     function edit($id)
     {
-        $this->editingTodoId = $id;
-        $this->editingTodoName = Todo::find($id)->name;
+        try {
+            $this->editingTodoId = $id;
+            $this->editingTodoName = Todo::findOrFail($id)->name;
+        } catch (Exception $e) {
+            session()->flash('error', 'Todo cannot be edited.');
+            return;
+        }
     }
 
     function update()
     {
-        $this->validateOnly('editingTodoName');
+        try {
+            $this->validateOnly('editingTodoName');
 
-        $todo = Todo::find($this->editingTodoId)->update(
-            ['name' => $this->editingTodoName]
-        );
+            $todo = Todo::findOrFail($this->editingTodoId)->update(
+                ['name' => $this->editingTodoName]
+            );
 
-        $this->cancelEdit();
+            $this->cancelEdit();
 
-        session()->flash('success', 'Todo updated successfully.');
+            session()->flash('success', 'Todo updated successfully.');
+        } catch (Exception $e) {
+            session()->flash('error', 'Todo cannot be updated.');
+            return;
+        }
     }
 
     function cancelEdit()
