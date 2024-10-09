@@ -55,6 +55,13 @@ class TodoList extends Component
         $this->editingTodoName = Todo::find($id)->name;
     }
 
+    function update() {}
+
+    function cancelEdit()
+    {
+        $this->reset('editingTodoId', 'editingTodoName');
+    }
+
     public function render()
     {
         return view('livewire.todo-list', [
